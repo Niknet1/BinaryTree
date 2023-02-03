@@ -1,0 +1,122 @@
+public class BinaryTree {
+    private BinaryNode root;
+
+    public BinaryTree() {
+        root = null;
+    }
+
+    public void add(BinaryNode x) {
+        if (root == null) {
+            root = x;
+        } else {
+            add(root, x);
+        }
+    }
+
+    private void add(BinaryNode parent, BinaryNode x) {
+        if (x.getValue().compareTo(parent.getValue()) < 0) {
+            if (parent.getLeft() == null) {
+                parent.setLeft(x);
+            } else {
+                add(parent.getLeft(), x);
+            }
+        } else {
+            if (parent.getRight() == null) {
+                parent.setRight(x);
+            } else {
+                add(parent.getRight(), x);
+            }
+        }
+    }
+
+    public String inOrder() {
+        return inOrder(root);
+    }
+
+    private String inOrder(BinaryNode x) {
+        String temp = "";
+        if (x != null) {
+
+
+            temp += inOrder(x.getLeft());
+            temp += x.getValue();
+            temp += inOrder(x.getRight());
+        }
+        return temp;
+    }
+
+    //deletion
+
+    public BinaryNode delete(Comparable target) {
+        if (root == null) return null;
+        BinaryNode temp = root;
+        BinaryNode inorderSuccessor;
+        if (root.getLeft() == null && root.getRight() == null) {
+            root = null;
+            return temp;
+        }
+//remove root degree 1 – right child
+        else if (root.getLeft() == null) {
+            root = root.getRight();
+            temp.setRight(null);
+            ;
+            return temp;
+        }
+//remove root degree 1 – left child
+        else if (root.getRight() == null) {
+            root = root.getLeft();
+            temp.setLeft(null);
+            return temp;
+        }
+//remove root degree 2
+        else {
+            inorderSuccessor = successor(root);
+            swap(root, inorderSuccessor);
+            if (root.getRight() == inorderSuccessor) {
+                root.setRight(inorderSuccessor.getRight());
+                inorderSuccessor.setRight(null);
+                return inorderSuccessor;
+            }
+            return remove(root.getRight(), target);
+        }
+        //if root is not removed call remove helper method
+
+        return remove(root, target);
+
+
+    }
+
+
+    private BinaryNode remove(BinaryNode k, Comparable x);{
+
+    }
+
+
+    private void swap(BinaryNode k, BinaryNode i) {
+        Comparable temp = k.getValue();
+        k.setMyVal(i.getValue());
+        i.setMyVal(temp);
+    }
+
+    private BinaryNode successor(BinaryNode k) {
+        BinaryNode temp = k;
+        temp = temp.getRight();
+        while (temp.getLeft() != null) {
+            temp = temp.getLeft();
+        }
+        return temp;
+    }
+
+    private BinaryNode search(BinaryNode parent, Comparable target) {
+        if (parent == null) return null;
+        if (parent.getLeft() != null && parent.getLeft().getValue().equals(target) ||
+                parent.getRight() != null && parent.getRight().getValue().equals(target)) {
+            return parent;
+        } else if (target.compareTo(parent.getValue()) < 0) {
+            return search(parent.getLeft(), target);
+        } else {
+            return search(parent.getRight(), target);
+        }
+    }
+}
+
